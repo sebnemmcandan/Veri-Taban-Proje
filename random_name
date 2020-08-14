@@ -1,0 +1,58 @@
+import requests
+from bs4 import BeautifulSoup
+import random
+
+
+class random_name:
+    def __init__(self):
+        self.mixed_words = []
+
+    def islem(self):
+        r = requests.get("https://huseyindemirtas.net/kullanici-adi-listesi-ad-soyad-listesi")
+        soup = BeautifulSoup(r.content, "html.parser")
+        gelen_veri = soup.find_all("table")
+        film_tablosu = (gelen_veri[0].contents)[len(gelen_veri[0].contents)-2]
+        film_tablosu = film_tablosu.find_all("tr")
+        words = []
+
+        for film in film_tablosu:
+            film_basliklari = film.find_all("td")
+            ad = film_basliklari[0].text
+            soyad = film_basliklari[1].text
+            word = ad + " " + soyad
+            words.append(word)
+
+        for i in range(0,len(words)):
+            #print(words[i])
+            i+=1
+        self.mixed_words = []
+        used_indexes = []
+        indexed = 0
+
+        def isUsed(used, index):
+            for i in range(0, len(used) - 1):
+                if index == used[i]:
+                    return True
+            return False
+
+        for i in range(0, len(words)):
+            random_number = random.randint(0, len(words) - 1)
+            if isUsed(used_indexes, random_number) == False:
+                self.mixed_words.append(words[random_number])
+                used_indexes.append(random_number)
+                indexed += 1
+            else:
+                continue
+
+        print("------------------")
+        for i in range(0, len(self.mixed_words)):
+            print(self.mixed_words[i])
+        lenn = len(self.mixed_words)
+        print(lenn)
+
+
+
+
+
+r1 = random_name()
+r1.islem()
